@@ -408,7 +408,7 @@ PipelineExecutorPtr QueryPipeline::execute(size_t num_threads)
         return executor;
 
     pool = std::make_shared<ThreadPool>(num_threads, num_threads, num_threads);
-    executor = std::make_shared<PipelineExecutor>(processors, &pool);
+    executor = std::make_shared<PipelineExecutor>(processors, pool.get());
 
     return executor;
 }
