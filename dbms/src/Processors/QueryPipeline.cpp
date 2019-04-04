@@ -397,17 +397,20 @@ void QueryPipeline::setProcessListElement(QueryStatus * elem)
 }
 
 
-void QueryPipeline::execute(size_t num_threads)
+PipelineExecutorPtr QueryPipeline::execute(size_t num_threads)
 {
     checkInitialized();
 
     if (!has_output)
         throw Exception("Cannot execute pipeline because it doesn't have output.", ErrorCodes::LOGICAL_ERROR);
 
-    ThreadPool pool(num_threads, num_threads, num_threads);
+    if (executor)
+        return executor;
 
-    PipelineExecutor executor(processors, &pool);
-    executor.execute();
+    pool = std::make_shared<ThreadPool>(num_threads, num_threads, num_threads);
+    executor = std::make_shared<PipelineExecutor>(processors, &pool);
+
+    return executor;
 }
 
 }

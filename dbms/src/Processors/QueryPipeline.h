@@ -41,7 +41,7 @@ public:
 
     void unitePipelines(std::vector<QueryPipeline> && pipelines, const Context & context);
 
-    PipelineExecutor execute(size_t num_threads);
+    PipelineExecutorPtr execute(size_t num_threads);
 
     size_t getNumStreams() const { return streams.size(); }
     size_t getNumMainStreams() const { return streams.size() - (has_delayed_stream ? 1 : 0); }
@@ -79,6 +79,9 @@ private:
     bool has_totals_having = false;
     bool has_extremes = false;
     bool has_output = false;
+
+    PipelineExecutorPtr executor;
+    std::shared_ptr<ThreadPool> pool;
 
     void checkInitialized();
     void checkSource(const ProcessorPtr & source);

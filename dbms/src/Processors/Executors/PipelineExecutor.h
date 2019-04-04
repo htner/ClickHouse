@@ -92,4 +92,6 @@ private:
     void prepareProcessor(size_t pid, bool async);
 };
 
+using PipelineExecutorPtr = std::shared_ptr<PipelineExecutor>;
+
 }

@@ -478,10 +478,10 @@ void TCPHandler::processOrdinaryQueryWithProcessors(size_t num_threads)
     pipeline.setOutput(lazy_format);
 
     ThreadPool pool(1, 1, 1);
-    PipelineExecutor executor = pipeline.execute(num_threads);
+    auto executor = pipeline.execute(num_threads);
     pool.schedule([&]()
     {
-        executor.execute();
+        executor->execute();
     });
 
     while (true)
@@ -493,7 +493,7 @@ void TCPHandler::processOrdinaryQueryWithProcessors(size_t num_threads)
             if (isQueryCancelled())
             {
                 /// A packet was received requesting to stop execution of the request.
-                executor.cancel();
+                executor->cancel();
                 break;
             }
             else
