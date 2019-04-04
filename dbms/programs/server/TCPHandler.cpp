@@ -479,9 +479,18 @@ void TCPHandler::processOrdinaryQueryWithProcessors(size_t num_threads)
 
     ThreadPool pool(1, 1, 1);
     auto executor = pipeline.execute(num_threads);
+    bool exception = false;
     pool.schedule([&]()
     {
-        executor->execute();
+        try
+        {
+            executor->execute();
+        }
+        catch (...)
+        {
+            exception = true;
+            throw;
+        }
     });
 
     while (true)
@@ -512,6 +521,12 @@ void TCPHandler::processOrdinaryQueryWithProcessors(size_t num_threads)
 
                 if (lazy_format->isFinished())
                     break;
+
+                if (exception)
+                {
+                    pool.wait();
+                    break;
+                }
             }
         }
 
