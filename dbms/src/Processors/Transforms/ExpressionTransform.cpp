@@ -19,8 +19,8 @@ ExpressionTransform::ExpressionTransform(const Block & header, ExpressionActions
 
 void ExpressionTransform::transform(Chunk & chunk)
 {
-    auto block = getInputPort().getHeader().cloneWithColumns(chunk.detachColumns());
     auto num_rows = chunk.getNumRows();
+    auto block = getInputPort().getHeader().cloneWithColumns(chunk.detachColumns());
     expression->execute(block);
     chunk.setColumns(block.getColumns(), num_rows);
 }

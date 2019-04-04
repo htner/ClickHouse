@@ -4,6 +4,7 @@
 #include <IO/WriteBufferFromString.h>
 #include <Processors/printPipeline.h>
 #include <Common/EventCounter.h>
+#include <ext/scope_guard.h>
 
 namespace DB
 {
@@ -143,14 +144,14 @@ void PipelineExecutor::addJob(UInt64 pid)
     {
         auto job = [this, pid]()
         {
+            SCOPE_EXIT(event_counter.notify());
+
             graph[pid].processor->work();
 
             {
                 std::lock_guard lock(finished_execution_mutex);
                 finished_execution_queue.push(pid);
             }
-
-            event_counter.notify();
         };
 
         pool->schedule(createExceptionHandledJob(std::move(job), exception_handler));
