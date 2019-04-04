@@ -60,7 +60,7 @@ void QueryPipeline::init(Processors sources)
     }
 }
 
-void QueryPipeline::addSimpleTransform(ProcessorGetter getter)
+void QueryPipeline::addSimpleTransform(const ProcessorGetter & getter)
 {
     checkInitialized();
 
@@ -185,6 +185,8 @@ void QueryPipeline::resize(size_t num_streams)
     streams.reserve(num_streams);
     for (auto & output : resize->getOutputs())
         streams.emplace_back(&output);
+
+    processors.emplace_back(std::move(resize));
 }
 
 void QueryPipeline::addTotalsHavingTransform(ProcessorPtr transform)
@@ -291,6 +293,8 @@ void QueryPipeline::setOutput(ProcessorPtr output)
         extremes_port = &null_source->getPort();
         processors.emplace_back(std::move(null_source));
     }
+
+    processors.emplace_back(std::move(output));
 
     connect(*streams.front(), main);
     connect(*totals_having_port, totals);

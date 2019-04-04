@@ -24,7 +24,7 @@ public:
 
     using ProcessorGetter = std::function<ProcessorPtr(const Block & header)>;
 
-    void addSimpleTransform(ProcessorGetter getter);
+    void addSimpleTransform(const ProcessorGetter & getter);
     void addPipe(Processors pipe);
     void addTotalsHavingTransform(ProcessorPtr transform);
     void addExtremesTransform(ProcessorPtr transform);
