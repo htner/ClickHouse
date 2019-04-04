@@ -1,5 +1,7 @@
 #pragma once
 #include <Processors/IProcessor.h>
+#include <Processors/Executors/PipelineExecutor.h>
+
 #include <DataStreams/IBlockInputStream.h>
 #include <DataStreams/IBlockOutputStream.h>
 
@@ -39,7 +41,7 @@ public:
 
     void unitePipelines(std::vector<QueryPipeline> && pipelines, const Context & context);
 
-    void execute(size_t num_threads);
+    PipelineExecutor execute(size_t num_threads);
 
     size_t getNumStreams() const { return streams.size(); }
     size_t getNumMainStreams() const { return streams.size() - (has_delayed_stream ? 1 : 0); }

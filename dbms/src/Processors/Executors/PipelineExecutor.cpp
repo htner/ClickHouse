@@ -9,7 +9,7 @@ namespace DB
 {
 
 PipelineExecutor::PipelineExecutor(Processors processors, ThreadPool * pool)
-    : processors(std::move(processors)), pool(pool)
+    : processors(std::move(processors)), pool(pool), cancelled(false)
 {
     buildGraph();
 }
@@ -291,7 +291,7 @@ void PipelineExecutor::execute()
 {
     addChildlessProcessorsToQueue();
 
-    while (true)
+    while (!cancelled)
     {
         processFinishedExecutionQueueSafe();
         processPrepareQueue();

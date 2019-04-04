@@ -621,7 +621,8 @@ void executeQuery(
                 set_query_id(context.getClientInfo().current_query_id);
 
             pipeline.setOutput(std::move(out));
-            pipeline.execute(context.getSettingsRef().max_threads);
+            auto executor = pipeline.execute(context.getSettingsRef().max_threads);
+            executor.execute();
         }
     }
     catch (...)
