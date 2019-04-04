@@ -427,16 +427,8 @@ static std::tuple<ASTPtr, BlockIO> executeQueryImpl(
                 }
             };
 
-            if (use_processors)
-            {
-                pipeline.finish_callback = std::move(finish_callback);
-                pipeline.exception_callback = std::move(exception_callback);
-            }
-            else
-            {
-                res.finish_callback = std::move(finish_callback);
-                res.exception_callback = std::move(exception_callback);
-            }
+            res.finish_callback = std::move(finish_callback);
+            res.exception_callback = std::move(exception_callback);
 
             if (!internal && res.in)
             {
